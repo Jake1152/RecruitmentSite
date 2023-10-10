@@ -266,6 +266,27 @@
 - 기업 정보
 - etc
 
+## 1. DB 설계
+
+## 2. 환경구축
+
+- DB, node package, etc
+
+## 3. 테스트 환경 구축
+
+- swagger and postman
+- 테스트 기법 탐색(구글링, 테스트 책 참조)
+- simple front UI? (고려)
+
+## 4. 코딩
+
+- simple server
+- DB connect
+- Register "Employment Opportunity"
+- Read "Employment Opportunity"
+- Modify "Employment Opportunity"
+- Remove "Employment Opportunity"
+
 # 검증
 
 # 실행
