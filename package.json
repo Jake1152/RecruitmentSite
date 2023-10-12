@@ -1,0 +1,17 @@
+{
+    "name": "express-sequelize-mysql",
+    "version": "1.0.0",
+    "description": "Express application using Sequelize with MySQL",
+    "main": "app.js", 
+    "scripts": {
+      "start": "npm run dev"
+    },
+    "author": "Jinho IM",
+    "license": "MIT",
+    "dependencies": {
+      "express": "^4.17.1",
+      "sequelize": "^6.10.3",
+      "mysql2": "^2.3.0"
+    }
+  }
+  
