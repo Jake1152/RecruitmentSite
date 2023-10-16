@@ -1,17 +1,26 @@
 {
-    "name": "express-sequelize-mysql",
-    "version": "1.0.0",
-    "description": "Express application using Sequelize with MySQL",
-    "main": "app.js", 
-    "scripts": {
-      "start": "npm run dev"
-    },
-    "author": "Jinho IM",
-    "license": "MIT",
-    "dependencies": {
-      "express": "^4.17.1",
-      "sequelize": "^6.10.3",
-      "mysql2": "^2.3.0"
-    }
+  "name": "express-sequelize-mysql",
+  "version": "1.0.0",
+  "description": "Express application using Sequelize with MySQL",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "Jinho IM",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.10.3",
+    "sequelize-cli": "^6.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3"
   }
-  
+}
