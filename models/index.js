@@ -1,10 +1,20 @@
 "use strict";
 
 const Sequelize = require("sequelize");
+
+const Company = require('./company');
+const EmploymentOpportunity = require('./employment_opportunity');
+
+const env = process.env.NODE_ENV || 'development';
 const config = require("../config/config")[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config);
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 db.sequelize = sequelize;
 
-moduile.exports = db;
+// db.Company;
+
+Company.initiate(sequelize);
+EmploymentOpportunity.initiate(sequelize);
+
+module.exports = db;

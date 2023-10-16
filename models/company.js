@@ -1,25 +1,33 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize(
-  "your_database_name",
-  "your_username",
-  "your_password",
-  {
-    host: "localhost",
-    dialect: "mysql",
+class Company extends Sequelize.Model {
+  static initiate(sequelize) {
+    Company.init({
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: Sequelize.STRING,
+        unique: true,
+      },
+    }, {
+      sequelize,
+      timestamps: false,
+      underscored: false,
+      modelName: 'Company',
+      tableName: 'company',
+      paranoid: false,
+      charset: 'utf8',
+      collate: 'utf8_general_ci',
+    });
   }
-);
 
-const Company = sequelize.define("Company", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    unique: true,
-  },
-});
+  // static associate(db) {
+  //   db.Company.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
+  // }
+};
+
 
 module.exports = Company;

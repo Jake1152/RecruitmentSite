@@ -12,7 +12,8 @@
     - CRUD
       CRUD 항목별로 gif 보여주기
       - swagger
-      - postman
+        - CRUD
+      <!-- - postman -->
 
 - 실행방법
 
