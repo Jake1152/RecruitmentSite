@@ -27,6 +27,7 @@ wanted pre-onboarding 사전과제
 - npm i
 - company 데이터 추가
   ```
+    CREATE [your database];
     USE [your database];
   ```
   ```
