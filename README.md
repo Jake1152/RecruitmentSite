@@ -22,26 +22,31 @@ wanted pre-onboarding 사전과제
 # 실행방법
 
 ## 환경구축 (window, linux 기준)
-  - node, mysql Ver 8.0 설치 
-  - npm i
-  - company 데이터 추가
-    ```
-      USE [your database];
-    ```
-    ```
-      INSERT INTO company (name) VALUES ('42');
-    ```
-  - npm start
+
+- node, mysql Ver 8.0 설치
+- npm i
+- company 데이터 추가
+  ```
+    USE [your database];
+  ```
+  ```
+    INSERT INTO company (name) values ('RIDI'), ('GOOGLE'), ('FIXAR'), ('SKELTER LABS'), ('VOYGER X');
+  ```
+- npm start
+
 ## swagger test 방법
+
 ### 채용공고 등록
 
 ### 채용공고 수정
 
 ### 채용공고 검색
-#### 전체검색
-#### 특정 공고 검색
-### 채용공고 삭제
 
+#### 전체검색
+
+#### 특정 공고 검색
+
+### 채용공고 삭제
 
 # DB ERD
 
