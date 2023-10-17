@@ -20,7 +20,7 @@
 - 채용보상금
 - 사용기술
 
-- employment_opportunity table
+- employmentOpportunity table
   - id (PK)
   - company_id (FK refernce company table's id field)
   - working_country
@@ -41,7 +41,7 @@
   - array로 저장한다고 할때 유저 table에 지원한 공고 id를 넣거나
   - 채용공고 table에 지원한 유저 id를 넣을 수 있을거 같다
   - 둘다에서 연관되므로 별도의 DB 자료구조를 이용해서 처리하는 것이 더 나을거 같다. 별도의 table 등등
- 
+
 # create table sql query
 
 -- Create company table
@@ -50,8 +50,8 @@ id INT AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) UNIQUE
 );
 
--- Create employment_opportunity table
-CREATE TABLE employment_opportunity (
+-- Create employmentOpportunity table
+CREATE TABLE employmentOpportunity (
 id INT AUTO_INCREMENT PRIMARY KEY,
 company_id INT,
 company_name VARCHAR(255) UNIQUE,

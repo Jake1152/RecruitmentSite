@@ -2,14 +2,19 @@
 
 const Sequelize = require("sequelize");
 
-const Company = require('./company');
-const EmploymentOpportunity = require('./employment_opportunity');
+const Company = require("./company");
+const EmploymentOpportunity = require("./employmentOpportunity");
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || "development";
 const config = require("../config/config")[env];
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config,
+);
 db.sequelize = sequelize;
 
 // db.Company;
