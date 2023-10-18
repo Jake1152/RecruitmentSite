@@ -34,10 +34,6 @@ class Company extends Sequelize.Model {
       },
     );
   }
-
-  // static associate(db) {
-  //   db.Company.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
-  // }
 }
 
 console.log(`Company in /models : ${Company}`);

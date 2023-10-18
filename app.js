@@ -28,16 +28,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// const { swaggerUi, specs } = require("./swagger/swagger");
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-
 app.use("/", employmentOpportunityRouter);
 
 app.get("/", (req, res) => {
-  // return res.send();
   return res.send("Hello World!");
 });
-// app.use((req, res, next) => {
+
 app.use("*", (req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;

@@ -3,16 +3,20 @@ const router = express.Router();
 
 const { Company, EmploymentOpportunity } = require("../models");
 
-// const createEmploymentOpportunity = async (employmentOpportunity) => {
-//   try {
-//     const employmentOpportunity = await EmploymentOpportunity.Create({
-//       employmentOpportunity,
-//     });
-//     return employmentOpportunity;
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+const createEmploymentOpportunity = async (employmentOpportunity) => {
+  try {
+    console.log(
+      "All employmentOpportunity:",
+      JSON.stringify(employmentOpportunity, null, 2),
+    );
+    const employmentOpportunityResult = await EmploymentOpportunity.create(
+      employmentOpportunity,
+    );
+    return employmentOpportunityResult;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 const findCompanyId = async (companyId) => {
   try {
@@ -28,16 +32,6 @@ function isNumericString(input) {
   return numericRegex.test(input);
 }
 
-/**
- * test input
- * {
-    "companyId": "sdf",
-    "recruitmentJobPosition": "backend junior developer",
-    "recruitmentBonus": "424200",
-    "recruitementContent": "원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
-    "technicalSkill": "Javascript"
-  }
- */
 router.post("/employment", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
@@ -70,39 +64,22 @@ router.post("/employment", async (req, res) => {
     console.log(`companyId: ${companyId}`);
     const selectedCompanyId = await findCompanyId(companyId);
     if (selectedCompanyId === null) return res.status(400).send("Bad request");
-    // employmentOpportunity = {
-    //   company_id : parseInt(companyId),
-    //   working_country:
-    //   company_id : parseInt(companyId),
-    //   company_id : parseInt(companyId),
-
-    // };
-    // const createdEmploymentOpportunity = await createEmploymentOpportunity();
-    // console.log("All companys:", JSON.stringify(selectedCompanyId, null, 2));
-    // sqlResult.forEach((element) => {
-    //   console.log(`element of sqlResult : ${element}`);
-    //   console.log(`element.Company of sqlResult : ${element.Company}`);
-    //   // element.Company;
-    // });
+    const employmentOpportunity = {
+      company_id: parseInt(companyId),
+      position: recruitmentJobPosition,
+      requirement_skill: technicalSkill,
+      compensation: parseInt(recruitmentBonus),
+      content: recruitementContent,
+    };
+    console.log(`# employmentOpportunity : ${employmentOpportunity}`);
+    const createdEmploymentOpportunity = await createEmploymentOpportunity(
+      employmentOpportunity,
+    );
+    return res.status(201).json(createdEmploymentOpportunity);
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
   }
-  return res.status(200).send("OK");
 });
 
-/**
- * create
- * read
- */
-/**
- * 실행결과
- * {
-        "companyId":companyId,
-        "recruitment_job_position":"backend junior developer",
-        "recruitment_bonus": 424200,
-        "recruitement_content":"원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
-        "technical_skill": "Javascript"
-    }
- */
 module.exports = router;

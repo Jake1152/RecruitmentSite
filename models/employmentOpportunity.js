@@ -17,12 +17,6 @@ class EmploymentOpportunity extends Sequelize.Model {
             key: "id",
           },
         },
-        working_country: {
-          type: Sequelize.STRING,
-        },
-        working_location: {
-          type: Sequelize.STRING,
-        },
         position: {
           type: Sequelize.STRING,
         },
@@ -48,10 +42,6 @@ class EmploymentOpportunity extends Sequelize.Model {
       },
     );
   }
-
-  // static associate(db) {
-  //   db.EmploymentOpportunity.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
-  // }
 }
 
 module.exports = EmploymentOpportunity;

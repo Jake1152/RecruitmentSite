@@ -17,19 +17,13 @@
 
   - Example) # 데이터 예시이며, 필드명은 임의로 설정가능합니다.
   {
-  "회사\_id":회사\_id,
-  "채용포지션":"백엔드 주니어 개발자",
-  "채용보상금":1000000,
-  "채용내용":"원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
-  "사용기술":"Python"
+    "회사\_id":회사\_id,
+    "채용포지션":"백엔드 주니어 개발자",
+    "채용보상금":1000000,
+    "채용내용":"원티드랩에서 백엔드 주니어 개발자를 채용합니다. 자격요건은..",
+    "사용기술":"Python"
   }
-    <!-- {
-    "company_id":company_id,
-    "recruitment_job_position":"backend junior developer",
-    "recruitment_bonus": 424200,
-    "recruitement_content":"원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
-    "technical_skill": "Javascript"
-    } -->
+
 
 2. 채용공고 수정
    // put, patch method
