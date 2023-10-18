@@ -1,3 +1,4 @@
 *.txt
 /node_modules
 /md_dir
+.env
