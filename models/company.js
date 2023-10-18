@@ -13,6 +13,14 @@ class Company extends Sequelize.Model {
           type: Sequelize.STRING,
           unique: true,
         },
+        country: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        location: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
       },
       {
         sequelize,

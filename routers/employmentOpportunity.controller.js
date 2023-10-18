@@ -1,17 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { Sequelize } = require("sequelize");
 
 const { Company, EmploymentOpportunity } = require("../models");
-// const { Company } = require("../models/company");
-// const { Company, EmploymentOpportunity } = require("../models");
-console.log(`Company in employmentOpportunity.js : ${Company}`);
 
-// const createEmploymentOpportunity = async () => {
+// const createEmploymentOpportunity = async (employmentOpportunity) => {
 //   try {
-//     const employmentOpportunity = await EmploymentOpportunity.findOrCreate({
-//       where: { company_id },
+//     const employmentOpportunity = await EmploymentOpportunity.Create({
+//       employmentOpportunity,
 //     });
+//     return employmentOpportunity;
 //   } catch (err) {
 //     console.error(err);
 //   }
@@ -19,8 +16,6 @@ console.log(`Company in employmentOpportunity.js : ${Company}`);
 
 const findCompanyId = async (companyId) => {
   try {
-    console.log(`${Company}`);
-    // const dbComanyId = await Company.findAll();
     const dbComanyId = await Company.findOne({ where: { id: companyId } });
     return dbComanyId;
   } catch (err) {
@@ -28,11 +23,10 @@ const findCompanyId = async (companyId) => {
   }
 };
 
-// sequelize.sequelize.post
-// Sequelize.
-// router.get("/", (req, res) => {
-//   res.send("This is employment endpoint");
-// });
+function isNumericString(input) {
+  const numericRegex = /^[0-9]*$/;
+  return numericRegex.test(input);
+}
 
 /**
  * test input
@@ -43,36 +37,26 @@ const findCompanyId = async (companyId) => {
     "recruitementContent": "원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
     "technicalSkill": "Javascript"
   }
-  // const {
-  //   companyId,
-  //   recruitmentJobPosition,
-  //   recruitmentBonus,
-  //   recruitementContent,
-  //   technicalSkill,
-  // } = {
-  //   companyId: "",
-  //   recruitmentJobPosition: "backend junior developer",
-  //   recruitmentBonus: "424200",
-  //   recruitementContent:
-  //     "원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
-  //   technicalSkill: "Javascript",
-  // };
-  //
  */
 router.post("/employment", async (req, res) => {
-  let { companyId } = req.body;
+  // request obejct properties trim
+  for (const [key, value] of Object.entries(req.body)) {
+    if (typeof value === "string") req.body[key] = value.trim();
+  }
   const {
+    companyId,
     recruitmentJobPosition,
     recruitmentBonus,
     recruitementContent,
     technicalSkill,
   } = req.body;
   try {
-    companyId = parseInt(companyId);
     if (
       !companyId ||
+      !isNumericString(companyId) ||
       !recruitmentJobPosition ||
       !recruitmentBonus ||
+      !isNumericString(recruitmentBonus) ||
       !recruitementContent ||
       !technicalSkill
     )
@@ -84,10 +68,17 @@ router.post("/employment", async (req, res) => {
 
   try {
     console.log(`companyId: ${companyId}`);
-    const companies = await findCompanyId(companyId);
-    // console.log(`sqlResult: ${sqlResult}`);
-    // console.log(companies.every((company) => company instanceof Company)); // true
-    console.log("All companys:", JSON.stringify(companies, null, 2));
+    const selectedCompanyId = await findCompanyId(companyId);
+    if (selectedCompanyId === null) return res.status(400).send("Bad request");
+    // employmentOpportunity = {
+    //   company_id : parseInt(companyId),
+    //   working_country:
+    //   company_id : parseInt(companyId),
+    //   company_id : parseInt(companyId),
+
+    // };
+    // const createdEmploymentOpportunity = await createEmploymentOpportunity();
+    // console.log("All companys:", JSON.stringify(selectedCompanyId, null, 2));
     // sqlResult.forEach((element) => {
     //   console.log(`element of sqlResult : ${element}`);
     //   console.log(`element.Company of sqlResult : ${element.Company}`);
@@ -107,7 +98,7 @@ router.post("/employment", async (req, res) => {
 /**
  * 실행결과
  * {
-        "company_id":company_id,
+        "companyId":companyId,
         "recruitment_job_position":"backend junior developer",
         "recruitment_bonus": 424200,
         "recruitement_content":"원티드 랩에서 백앤드 주니어 개발자 채용합니다. 자격요건 .. ",
