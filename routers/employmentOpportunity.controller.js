@@ -19,9 +19,9 @@ console.log(`Company in employmentOpportunity.js : ${Company}`);
 
 const findCompanyId = async (companyId) => {
   try {
-    // const dbComanyId = await Company.findOne({ where: { id: companyId } });
     console.log(`${Company}`);
-    const dbComanyId = await Company.findAll();
+    // const dbComanyId = await Company.findAll();
+    const dbComanyId = await Company.findOne({ where: { id: companyId } });
     return dbComanyId;
   } catch (err) {
     console.error(err);
@@ -84,8 +84,15 @@ router.post("/employment", async (req, res) => {
 
   try {
     console.log(`companyId: ${companyId}`);
-    const sqlResult = await findCompanyId(companyId);
-    console.log(`sqlResult: ${sqlResult}`);
+    const companies = await findCompanyId(companyId);
+    // console.log(`sqlResult: ${sqlResult}`);
+    // console.log(companies.every((company) => company instanceof Company)); // true
+    console.log("All companys:", JSON.stringify(companies, null, 2));
+    // sqlResult.forEach((element) => {
+    //   console.log(`element of sqlResult : ${element}`);
+    //   console.log(`element.Company of sqlResult : ${element.Company}`);
+    //   // element.Company;
+    // });
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
