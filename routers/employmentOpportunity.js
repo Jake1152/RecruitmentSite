@@ -32,6 +32,18 @@ function isNumericString(input) {
   return numericRegex.test(input);
 }
 
+// 채용공고 읽기 - read all
+router.get("/employment", async (req, res) => {
+  try {
+    const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll();
+    return res.status(200).json(selectedEmploymentOpportunity);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
+// 채용공고 등록
 router.post("/employment", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
@@ -41,7 +53,7 @@ router.post("/employment", async (req, res) => {
     companyId,
     recruitmentJobPosition,
     recruitmentBonus,
-    recruitementContent,
+    recruitmentContent,
     technicalSkill,
   } = req.body;
   try {
@@ -51,7 +63,7 @@ router.post("/employment", async (req, res) => {
       !recruitmentJobPosition ||
       !recruitmentBonus ||
       !isNumericString(recruitmentBonus) ||
-      !recruitementContent ||
+      !recruitmentContent ||
       !technicalSkill
     )
       throw new Error("Validation issue");
@@ -61,7 +73,6 @@ router.post("/employment", async (req, res) => {
   }
 
   try {
-    console.log(`companyId: ${companyId}`);
     const selectedCompanyId = await findCompanyId(companyId);
     if (selectedCompanyId === null) return res.status(400).send("Bad request");
     const employmentOpportunity = {
@@ -69,7 +80,7 @@ router.post("/employment", async (req, res) => {
       position: recruitmentJobPosition,
       requirement_skill: technicalSkill,
       compensation: parseInt(recruitmentBonus),
-      content: recruitementContent,
+      content: recruitmentContent,
     };
     console.log(`# employmentOpportunity : ${employmentOpportunity}`);
     const createdEmploymentOpportunity = await createEmploymentOpportunity(
