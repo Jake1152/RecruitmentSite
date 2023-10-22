@@ -33,6 +33,11 @@ function isNumericString(input) {
 }
 
 // 채용공고 읽기 - read all
+/**
+ * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
+ * select를 끊어서 결과를 보내주도록 한다
+ * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
+ */
 router.get("/employment", async (req, res) => {
   try {
     const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll();
@@ -92,5 +97,117 @@ router.post("/employment", async (req, res) => {
     return res.status(500).send("Server Error");
   }
 });
+
+// 공고 수정
+router.put("/employment/:id", async (req, res) => {
+  // request obejct properties trim
+  for (const [key, value] of Object.entries(req.body)) {
+    if (typeof value === "string") req.body[key] = value.trim();
+  }
+  const {
+    employmentId,
+    recruitmentJobPosition,
+    recruitmentBonus,
+    recruitmentContent,
+    technicalSkill,
+  } = req.body;
+  try {
+    if (
+      !employmentId ||
+      !isNumericString(employmentId) ||
+      !recruitmentJobPosition ||
+      !recruitmentBonus ||
+      !isNumericString(recruitmentBonus) ||
+      !recruitmentContent ||
+      !technicalSkill
+    )
+      throw new Error("Validation issue");
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send("Bad request");
+  }
+
+  try {
+    const employmentOpportunity = {
+      position: recruitmentJobPosition,
+      requirement_skill: technicalSkill,
+      compensation: parseInt(recruitmentBonus),
+      content: recruitmentContent,
+    };
+
+    const updatedEmploymentOpportunity = await EmploymentOpportunity.update(
+      employmentOpportunity,
+      {
+        where: {
+          id: employmentId,
+        },
+      },
+    );
+    return res.status(200).json(updatedEmploymentOpportunity);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
+// 공고 삭제
+
+// router.delete("/employment/:id", async (req, res) => {
+//   // request obejct properties trim
+//   for (const [key, value] of Object.entries(req.body)) {
+//     if (typeof value === "string") req.body[key] = value.trim();
+//   }
+//   const {
+//     employmentId,
+//     companyId,
+//     recruitmentJobPosition,
+//     recruitmentBonus,
+//     recruitmentContent,
+//     technicalSkill,
+//   } = req.body;
+//   try {
+//     if (
+//       !employmentId ||
+//       !isNumericString(employmentId) ||
+//       !companyId ||
+//       !isNumericString(companyId) ||
+//       !recruitmentJobPosition ||
+//       !recruitmentBonus ||
+//       !isNumericString(recruitmentBonus) ||
+//       !recruitmentContent ||
+//       !technicalSkill
+//     )
+//       throw new Error("Validation issue");
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(400).send("Bad request");
+//   }
+
+//   try {
+//     const selectedCompanyId = await findCompanyId(companyId);
+//     if (selectedCompanyId === null) return res.status(400).send("Bad request");
+//     const employmentOpportunity = {
+//       company_id: parseInt(companyId),
+//       position: recruitmentJobPosition,
+//       requirement_skill: technicalSkill,
+//       compensation: parseInt(recruitmentBonus),
+//       content: recruitmentContent,
+//     };
+//     console.log(`# employmentOpportunity : ${employmentOpportunity}`);
+//     const createdEmploymentOpportunity = await createEmploymentOpportunity(
+//       employmentOpportunity,
+//     );
+//     return res.status(201).json(createdEmploymentOpportunity);
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).send("Server Error");
+//   }
+// });
+
+// await User.destroy({
+//   where: {
+//     firstName: "Jane",
+//   },
+// });
 
 module.exports = router;
