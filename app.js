@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const { sequelize } = require("./models/");
 
 const app = express();
-const employmentOpportunityRouter = require("./routers/employmentOpportunity.controller");
+const employmentOpportunityRouter = require("./routers/employmentOpportunity");
 const port = 3000;
 
 app.set("port", process.env.PORT || port);
