@@ -151,63 +151,31 @@ router.put("/employment/:id", async (req, res) => {
 });
 
 // 공고 삭제
+router.delete("/employment/:id", async (req, res) => {
+  // request obejct properties trim
+  for (const [key, value] of Object.entries(req.body)) {
+    if (typeof value === "string") req.body[key] = value.trim();
+  }
+  const { employmentId } = req.body;
+  try {
+    if (!employmentId || !isNumericString(employmentId))
+      throw new Error("Validation issue");
+  } catch (err) {
+    console.error(err);
+    return res.status(400).send("Bad request");
+  }
 
-// router.delete("/employment/:id", async (req, res) => {
-//   // request obejct properties trim
-//   for (const [key, value] of Object.entries(req.body)) {
-//     if (typeof value === "string") req.body[key] = value.trim();
-//   }
-//   const {
-//     employmentId,
-//     companyId,
-//     recruitmentJobPosition,
-//     recruitmentBonus,
-//     recruitmentContent,
-//     technicalSkill,
-//   } = req.body;
-//   try {
-//     if (
-//       !employmentId ||
-//       !isNumericString(employmentId) ||
-//       !companyId ||
-//       !isNumericString(companyId) ||
-//       !recruitmentJobPosition ||
-//       !recruitmentBonus ||
-//       !isNumericString(recruitmentBonus) ||
-//       !recruitmentContent ||
-//       !technicalSkill
-//     )
-//       throw new Error("Validation issue");
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(400).send("Bad request");
-//   }
-
-//   try {
-//     const selectedCompanyId = await findCompanyId(companyId);
-//     if (selectedCompanyId === null) return res.status(400).send("Bad request");
-//     const employmentOpportunity = {
-//       company_id: parseInt(companyId),
-//       position: recruitmentJobPosition,
-//       requirement_skill: technicalSkill,
-//       compensation: parseInt(recruitmentBonus),
-//       content: recruitmentContent,
-//     };
-//     console.log(`# employmentOpportunity : ${employmentOpportunity}`);
-//     const createdEmploymentOpportunity = await createEmploymentOpportunity(
-//       employmentOpportunity,
-//     );
-//     return res.status(201).json(createdEmploymentOpportunity);
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).send("Server Error");
-//   }
-// });
-
-// await User.destroy({
-//   where: {
-//     firstName: "Jane",
-//   },
-// });
+  try {
+    const destoriedEmploymentOpportunity = await EmploymentOpportunity.destroy({
+      where: {
+        id: employmentId,
+      },
+    });
+    return res.status(200).json(destoriedEmploymentOpportunity);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
