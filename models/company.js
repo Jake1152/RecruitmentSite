@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+// const EmploymentOpportunity = require("./employmentOpportunity");
 
 class Company extends Sequelize.Model {
   static initiate(sequelize) {
@@ -33,6 +34,13 @@ class Company extends Sequelize.Model {
         collate: "utf8_general_ci",
       },
     );
+  }
+
+  static associate(db) {
+    db.Company.hasMany(db.EmploymentOpportunity, {
+      foreignKey: "company_id",
+      sourceKey: "id",
+    });
   }
 }
 

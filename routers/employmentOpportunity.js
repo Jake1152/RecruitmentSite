@@ -38,7 +38,7 @@ function isNumericString(input) {
  * select를 끊어서 결과를 보내주도록 한다
  * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
  */
-router.get("/employment", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll();
     return res.status(200).json(selectedEmploymentOpportunity);
@@ -48,8 +48,26 @@ router.get("/employment", async (req, res) => {
   }
 });
 
+// 특정 채용공고 읽기 - read
+/**
+ * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
+ * select를 끊어서 결과를 보내주도록 한다
+ * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
+ */
+router.get("/:id", async (req, res) => {
+  try {
+    const selectedEmploymentOpportunity = await EmploymentOpportunity.findOne({
+      where: { id: req.params.id },
+    });
+    return res.status(200).json(selectedEmploymentOpportunity);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
 // 채용공고 등록
-router.post("/employment", async (req, res) => {
+router.post("/", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
     if (typeof value === "string") req.body[key] = value.trim();
@@ -99,8 +117,8 @@ router.post("/employment", async (req, res) => {
 });
 
 // 공고 수정
-// /employment/:id
-router.put("/employment/:id", async (req, res) => {
+// //:id
+router.put("//:id", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
     if (typeof value === "string") req.body[key] = value.trim();
@@ -113,7 +131,7 @@ router.put("/employment/:id", async (req, res) => {
     technicalSkill,
   } = req.body;
   let { id } = req.params;
-  // id = id.trim(); // 사용자가 잘못된 URL => "/employment/1 " "1 " 1뒤에 " "을 날리는게 맞지 않을 수
+  // id = id.trim(); // 사용자가 잘못된 URL => "//1 " "1 " 1뒤에 " "을 날리는게 맞지 않을 수
   console.log(`id: #${id}#`);
   try {
     if (
@@ -155,11 +173,7 @@ router.put("/employment/:id", async (req, res) => {
 });
 
 // 공고 삭제
-router.delete("/employment/:id", async (req, res) => {
-  // request obejct properties trim
-  for (const [key, value] of Object.entries(req.body)) {
-    if (typeof value === "string") req.body[key] = value.trim();
-  }
+router.delete("//:id", async (req, res) => {
   const { id } = req.params;
   try {
     if (!id || !isNumericString(id)) throw new Error("Validation issue");
@@ -174,7 +188,11 @@ router.delete("/employment/:id", async (req, res) => {
         id: id,
       },
     });
-    return res.status(200).json(destoriedEmploymentOpportunity);
+    if (destoriedEmploymentOpportunity) {
+      return res.status(200).json({
+        message: "데이터 삭제 성공",
+      });
+    }
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
