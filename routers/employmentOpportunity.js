@@ -40,7 +40,30 @@ function isNumericString(input) {
  */
 router.get("/", async (req, res) => {
   try {
-    const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll();
+    const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll({
+      include: {
+        model: Company,
+        attributes: ["name", "country", "location"],
+        required: true,
+      },
+      // attributes: {
+      //   // include: ["Company.name", "Company.country", "Company.location"],
+      // },
+      raw: true,
+      // attributes: {
+      //   include: {
+      //     model: Company,
+      //     attributes: ["name", "country", "location"],
+      //   },
+      // },
+    });
+    console.log(
+      `# selectedEmploymentOpportunity: ${JSON.stringify(
+        selectedEmploymentOpportunity,
+        null,
+        2,
+      )}`,
+    );
     return res.status(200).json(selectedEmploymentOpportunity);
   } catch (err) {
     console.error(err);
