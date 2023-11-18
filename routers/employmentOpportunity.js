@@ -37,6 +37,34 @@ function isNumericString(input) {
  * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
  * select를 끊어서 결과를 보내주도록 한다
  * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
+ 
+ */
+/**
+ * raw: true 를 쓸때 최선의 방법이라 생각되는 것
+ * 공식문서와 여러곳은 확인해보았지만 딱히 뭐가 없는거 같다
+ * const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll({
+  include: {
+    model: Company,
+    attributes: ["name", "country", "location"],
+    required: true,
+  },
+  raw: true, // Get raw JSON data directly
+});
+
+const transformedResult = selectedEmploymentOpportunity.map(row => ({
+  채용공고_id: row.채용공고_id,
+  국가: row.국가,
+  지역: row.지역,
+  채용포지션: row.채용포지션,
+  채용내용: row.채용내용,
+  채용보상금: row.채용보상금,
+  사용기술: row.사용기술,
+  name: row['Company.name'], // Rename the attribute from "Company.name" to "name"
+  country: row['Company.country'],
+  location: row['Company.location'],
+}));
+
+console.log(transformedResult);
  */
 router.get("/", async (req, res) => {
   try {
@@ -44,12 +72,21 @@ router.get("/", async (req, res) => {
       include: {
         model: Company,
         attributes: ["name", "country", "location"],
-        required: true,
+        // required: true,
       },
+      // attributes: ,
+      attributes: [
+        "id",
+        "position",
+        "compensation",
+        "requirement_skill",
+        [(sequelize.literal("Company.name"), "name")],
+      ],
       // attributes: {
-      //   // include: ["Company.name", "Company.country", "Company.location"],
+      //   include: ["Company.name", "Company.country", "Company.location"],
       // },
       raw: true,
+      // nested: false,
       // attributes: {
       //   include: {
       //     model: Company,
