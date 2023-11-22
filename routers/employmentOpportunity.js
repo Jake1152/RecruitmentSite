@@ -75,17 +75,11 @@ router.get("/", async (req, res) => {
         // required: true,
       },
       // attributes: ,
-      attributes: [
-        "id",
-        "position",
-        "compensation",
-        "requirement_skill",
-        [(sequelize.literal("Company.name"), "name")],
-      ],
+      attributes: ["id", "position", "compensation", "requirement_skill"],
       // attributes: {
       //   include: ["Company.name", "Company.country", "Company.location"],
       // },
-      raw: true,
+      // raw: true,
       // nested: false,
       // attributes: {
       //   include: {
