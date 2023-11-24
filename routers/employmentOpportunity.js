@@ -68,33 +68,36 @@ console.log(transformedResult);
  */
 router.get("/", async (req, res) => {
   try {
-    const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll({
-      include: {
-        model: Company,
-        attributes: ["name", "country", "location"],
-        // required: true,
-      },
-      // attributes: ,
-      attributes: ["id", "position", "compensation", "requirement_skill"],
-      // attributes: {
-      //   include: ["Company.name", "Company.country", "Company.location"],
-      // },
-      // raw: true,
-      // nested: false,
-      // attributes: {
-      //   include: {
-      //     model: Company,
-      //     attributes: ["name", "country", "location"],
-      //   },
-      // },
-    });
-    console.log(
-      `# selectedEmploymentOpportunity: ${JSON.stringify(
-        selectedEmploymentOpportunity,
-        null,
-        2,
-      )}`,
-    );
+    const unprocessedSelectedEmploymentOpportunity =
+      await EmploymentOpportunity.findAll({
+        include: {
+          model: Company,
+          attributes: ["name", "country", "location"],
+          required: true,
+        },
+        attributes: ["id", "position", "compensation", "requirement_skill"],
+      });
+    const selectedEmploymentOpportunity =
+      unprocessedSelectedEmploymentOpportunity.map(
+        (employmentOpportunityPost) => {
+          return {
+            id: employmentOpportunityPost.id,
+            position: employmentOpportunityPost.position,
+            compensation: employmentOpportunityPost.compensation,
+            requirementSkill: employmentOpportunityPost.requirement_skill,
+            name: employmentOpportunityPost.Company.name,
+            country: employmentOpportunityPost.Company.country,
+            location: employmentOpportunityPost.Company.location,
+          };
+        },
+      );
+    // console.log(
+    //   `# selectedEmploymentOpportunity: ${JSON.stringify(
+    //     selectedEmploymentOpportunity,
+    //     null,
+    //     2,
+    //   )}`,
+    // );
     return res.status(200).json(selectedEmploymentOpportunity);
   } catch (err) {
     console.error(err);
