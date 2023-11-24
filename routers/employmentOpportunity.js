@@ -5,10 +5,6 @@ const { Company, EmploymentOpportunity } = require("../models");
 
 const createEmploymentOpportunity = async (employmentOpportunity) => {
   try {
-    console.log(
-      "All employmentOpportunity:",
-      JSON.stringify(employmentOpportunity, null, 2),
-    );
     const employmentOpportunityResult = await EmploymentOpportunity.create(
       employmentOpportunity,
     );
@@ -64,7 +60,6 @@ const transformedResult = selectedEmploymentOpportunity.map(row => ({
   location: row['Company.location'],
 }));
 
-console.log(transformedResult);
  */
 router.get("/", async (req, res) => {
   try {
@@ -73,7 +68,6 @@ router.get("/", async (req, res) => {
         include: {
           model: Company,
           attributes: ["name", "country", "location"],
-          required: true,
         },
         attributes: ["id", "position", "compensation", "requirement_skill"],
       });
@@ -91,13 +85,6 @@ router.get("/", async (req, res) => {
           };
         },
       );
-    // console.log(
-    //   `# selectedEmploymentOpportunity: ${JSON.stringify(
-    //     selectedEmploymentOpportunity,
-    //     null,
-    //     2,
-    //   )}`,
-    // );
     return res.status(200).json(selectedEmploymentOpportunity);
   } catch (err) {
     console.error(err);
@@ -107,16 +94,34 @@ router.get("/", async (req, res) => {
 
 // 특정 채용공고 읽기 - read
 /**
+ * detail
  * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
  * select를 끊어서 결과를 보내주도록 한다
  * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
  */
 router.get("/:id", async (req, res) => {
   try {
-    const selectedEmploymentOpportunity = await EmploymentOpportunity.findOne({
-      where: { id: req.params.id },
-    });
-    return res.status(200).json(selectedEmploymentOpportunity);
+    const unprocessedSelectedEmploymentOpportunityDetail =
+      await EmploymentOpportunity.findOne({
+        include: {
+          model: Company,
+          attributes: ["name", "country", "location"],
+        },
+        where: { id: req.params.id },
+      });
+
+    const selectedEmploymentOpportunityDetail = {
+      id: unprocessedSelectedEmploymentOpportunityDetail.id,
+      position: unprocessedSelectedEmploymentOpportunityDetail.position,
+      requirementSkill:
+        unprocessedSelectedEmploymentOpportunityDetail.requirement_skill,
+      compensation: unprocessedSelectedEmploymentOpportunityDetail.compensation,
+      name: unprocessedSelectedEmploymentOpportunityDetail.Company.name,
+      country: unprocessedSelectedEmploymentOpportunityDetail.Company.country,
+      location: unprocessedSelectedEmploymentOpportunityDetail.Company.location,
+      content: unprocessedSelectedEmploymentOpportunityDetail.content,
+    };
+    return res.status(200).json(selectedEmploymentOpportunityDetail);
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
@@ -162,7 +167,6 @@ router.post("/", async (req, res) => {
       compensation: parseInt(recruitmentBonus),
       content: recruitmentContent,
     };
-    console.log(`# employmentOpportunity : ${employmentOpportunity}`);
     const createdEmploymentOpportunity = await createEmploymentOpportunity(
       employmentOpportunity,
     );
@@ -189,7 +193,6 @@ router.put("//:id", async (req, res) => {
   } = req.body;
   let { id } = req.params;
   // id = id.trim(); // 사용자가 잘못된 URL => "//1 " "1 " 1뒤에 " "을 날리는게 맞지 않을 수
-  console.log(`id: #${id}#`);
   try {
     if (
       !id ||
