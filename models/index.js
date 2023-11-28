@@ -1,13 +1,13 @@
 "use strict";
 
 const Sequelize = require("sequelize");
+const Company = require("./company");
+const EmploymentOpportunity = require("./employmentOpportunity");
 
-const fs = require("fs");
-const path = require("path");
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config.js")[env];
-
+const config = require("../config/config")[env];
 const db = {};
+
 const sequelize = new Sequelize(
   config.database,
   config.username,
@@ -17,18 +17,13 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize;
 
-const basename = path.basename(__filename);
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file));
-    console.log(file, model.name);
-    db[model.name] = model;
-    model.initiate(sequelize);
-  });
+db.Company = Company;
+db.EmploymentOpportunity = EmploymentOpportunity;
+
+Company.initiate(sequelize);
+EmploymentOpportunity.initiate(sequelize);
+
+Company.associate(db);
+EmploymentOpportunity.associate(db);
 
 module.exports = db;

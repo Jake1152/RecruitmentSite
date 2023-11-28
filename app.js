@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", employmentOpportunityRouter);
+app.use("/employment", employmentOpportunityRouter);
 
 app.get("/", (req, res) => {
   return res.send("Hello World!");

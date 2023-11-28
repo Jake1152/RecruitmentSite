@@ -42,6 +42,18 @@ class EmploymentOpportunity extends Sequelize.Model {
       },
     );
   }
-}
 
+  /**
+   * 회사는 채용공고랄 여러개 가질 수 있다
+   * 채용공고 속에 회사는 1개이다
+   * 채용공고:회사 = M:1
+   */
+  static associate(db) {
+    db.EmploymentOpportunity.belongsTo(db.Company, {
+      foreignKey: "company_id",
+      target: "id",
+    });
+  }
+}
+// A.belongToMany.B
 module.exports = EmploymentOpportunity;

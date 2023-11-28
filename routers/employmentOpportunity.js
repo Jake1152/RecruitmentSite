@@ -5,10 +5,6 @@ const { Company, EmploymentOpportunity } = require("../models");
 
 const createEmploymentOpportunity = async (employmentOpportunity) => {
   try {
-    console.log(
-      "All employmentOpportunity:",
-      JSON.stringify(employmentOpportunity, null, 2),
-    );
     const employmentOpportunityResult = await EmploymentOpportunity.create(
       employmentOpportunity,
     );
@@ -37,10 +33,58 @@ function isNumericString(input) {
  * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
  * select를 끊어서 결과를 보내주도록 한다
  * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
+ 
  */
-router.get("/employment", async (req, res) => {
+/**
+ * raw: true 를 쓸때 최선의 방법이라 생각되는 것
+ * 공식문서와 여러곳은 확인해보았지만 딱히 뭐가 없는거 같다
+ * const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll({
+  include: {
+    model: Company,
+    attributes: ["name", "country", "location"],
+    required: true,
+  },
+  raw: true, // Get raw JSON data directly
+});
+
+const transformedResult = selectedEmploymentOpportunity.map(row => ({
+  채용공고_id: row.채용공고_id,
+  국가: row.국가,
+  지역: row.지역,
+  채용포지션: row.채용포지션,
+  채용내용: row.채용내용,
+  채용보상금: row.채용보상금,
+  사용기술: row.사용기술,
+  name: row['Company.name'], // Rename the attribute from "Company.name" to "name"
+  country: row['Company.country'],
+  location: row['Company.location'],
+}));
+
+ */
+router.get("/", async (req, res) => {
   try {
-    const selectedEmploymentOpportunity = await EmploymentOpportunity.findAll();
+    const unprocessedSelectedEmploymentOpportunity =
+      await EmploymentOpportunity.findAll({
+        include: {
+          model: Company,
+          attributes: ["name", "country", "location"],
+        },
+        attributes: ["id", "position", "compensation", "requirement_skill"],
+      });
+    const selectedEmploymentOpportunity =
+      unprocessedSelectedEmploymentOpportunity.map(
+        (employmentOpportunityPost) => {
+          return {
+            id: employmentOpportunityPost.id,
+            position: employmentOpportunityPost.position,
+            compensation: employmentOpportunityPost.compensation,
+            requirementSkill: employmentOpportunityPost.requirement_skill,
+            name: employmentOpportunityPost.Company.name,
+            country: employmentOpportunityPost.Company.country,
+            location: employmentOpportunityPost.Company.location,
+          };
+        },
+      );
     return res.status(200).json(selectedEmploymentOpportunity);
   } catch (err) {
     console.error(err);
@@ -48,8 +92,44 @@ router.get("/employment", async (req, res) => {
   }
 });
 
+// 특정 채용공고 읽기 - read
+/**
+ * detail
+ * 채용공고가 엄청 많다면 불필요하게 많이 보내주는 것일 수 있다
+ * select를 끊어서 결과를 보내주도록 한다
+ * 이것은 view에서 얼마나 보여줄지에 따라 달라짐(page view,  무한 스크롤)
+ */
+router.get("/:id", async (req, res) => {
+  try {
+    const unprocessedSelectedEmploymentOpportunityDetail =
+      await EmploymentOpportunity.findOne({
+        include: {
+          model: Company,
+          attributes: ["name", "country", "location"],
+        },
+        where: { id: req.params.id },
+      });
+
+    const selectedEmploymentOpportunityDetail = {
+      id: unprocessedSelectedEmploymentOpportunityDetail.id,
+      position: unprocessedSelectedEmploymentOpportunityDetail.position,
+      requirementSkill:
+        unprocessedSelectedEmploymentOpportunityDetail.requirement_skill,
+      compensation: unprocessedSelectedEmploymentOpportunityDetail.compensation,
+      name: unprocessedSelectedEmploymentOpportunityDetail.Company.name,
+      country: unprocessedSelectedEmploymentOpportunityDetail.Company.country,
+      location: unprocessedSelectedEmploymentOpportunityDetail.Company.location,
+      content: unprocessedSelectedEmploymentOpportunityDetail.content,
+    };
+    return res.status(200).json(selectedEmploymentOpportunityDetail);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
 // 채용공고 등록
-router.post("/employment", async (req, res) => {
+router.post("/", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
     if (typeof value === "string") req.body[key] = value.trim();
@@ -87,7 +167,6 @@ router.post("/employment", async (req, res) => {
       compensation: parseInt(recruitmentBonus),
       content: recruitmentContent,
     };
-    console.log(`# employmentOpportunity : ${employmentOpportunity}`);
     const createdEmploymentOpportunity = await createEmploymentOpportunity(
       employmentOpportunity,
     );
@@ -99,22 +178,25 @@ router.post("/employment", async (req, res) => {
 });
 
 // 공고 수정
-router.put("/employment/:id", async (req, res) => {
+// //:id
+router.put("//:id", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
     if (typeof value === "string") req.body[key] = value.trim();
   }
+  // router.
   const {
-    employmentId,
     recruitmentJobPosition,
     recruitmentBonus,
     recruitmentContent,
     technicalSkill,
   } = req.body;
+  let { id } = req.params;
+  // id = id.trim(); // 사용자가 잘못된 URL => "//1 " "1 " 1뒤에 " "을 날리는게 맞지 않을 수
   try {
     if (
-      !employmentId ||
-      !isNumericString(employmentId) ||
+      !id ||
+      !isNumericString(id) ||
       !recruitmentJobPosition ||
       !recruitmentBonus ||
       !isNumericString(recruitmentBonus) ||
@@ -139,7 +221,7 @@ router.put("/employment/:id", async (req, res) => {
       employmentOpportunity,
       {
         where: {
-          id: employmentId,
+          id: id,
         },
       },
     );
@@ -151,15 +233,10 @@ router.put("/employment/:id", async (req, res) => {
 });
 
 // 공고 삭제
-router.delete("/employment/:id", async (req, res) => {
-  // request obejct properties trim
-  for (const [key, value] of Object.entries(req.body)) {
-    if (typeof value === "string") req.body[key] = value.trim();
-  }
-  const { employmentId } = req.body;
+router.delete("//:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    if (!employmentId || !isNumericString(employmentId))
-      throw new Error("Validation issue");
+    if (!id || !isNumericString(id)) throw new Error("Validation issue");
   } catch (err) {
     console.error(err);
     return res.status(400).send("Bad request");
@@ -168,10 +245,14 @@ router.delete("/employment/:id", async (req, res) => {
   try {
     const destoriedEmploymentOpportunity = await EmploymentOpportunity.destroy({
       where: {
-        id: employmentId,
+        id: id,
       },
     });
-    return res.status(200).json(destoriedEmploymentOpportunity);
+    if (destoriedEmploymentOpportunity) {
+      return res.status(200).json({
+        message: "데이터 삭제 성공",
+      });
+    }
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
