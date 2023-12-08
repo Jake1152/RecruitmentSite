@@ -10,57 +10,52 @@ wanted pre-onboarding 사전과제
 
 # 환경구축 (window, linux 기준)
 
-- node, mysql Ver 8.0 설치
-- npm i
-- company 데이터 추가
+0. node, mysql Ver 8.0 설치
+  - node 12.22.9
+  - npm 10.2.5
+1. MySQL 데이터베이스 생성
   ```
     CREATE [your database];
     USE [your database];
   ```
+2. npm install
+3. npm start
+4. company table에 데이터 추가 
+  - 3.번 항목에서 서비스가 실행되면서 company테이블 등이 생성된 상태이며 아직 데이터는 없음.
+  - 아래의 명령어를 이용하여 회사 데이터를 추가합니다
   ```
     INSERT INTO company (name, country, location) values ('Inflab', '대한민국', '판교'), ('RIDI', '한국', '서울'), ('GOOGLE', 'USA', 'LA'), ('FIXAR', 'USA', 'New York'), ('SKELTER LABS', 'Korea', 'Seoul'), ('VOYGER X', 'Korea', 'Seoul');
   ```
-- npm start
 
 ## Postman
 
 ### 채용공고 등록
-
+![Alt text](./images/postImage.png)
 ### 채용공고 수정
+![Alt text](./images/putImage.png)
 
 ### 채용공고 검색
-
 #### 전체검색
+![Alt text](./images/image-2.png)
 
 #### 특정 공고 검색
+![Alt text](./images/image-3.png)
 
 ### 채용공고 삭제
+![Alt text](./images/deleteImage.png)
+
 
 # DB
 
 ## table 구조
 
 - company (회사)
-+----------+--------------+------+-----+---------+----------------+
-| Field    | Type         | Null | Key | Default | Extra          |
-+----------+--------------+------+-----+---------+----------------+
-| id       | int          | NO   | PRI | NULL    | auto_increment |
-| name     | varchar(255) | YES  | UNI | NULL    |                |
-| country  | varchar(255) | NO   |     | NULL    |                |
-| location | varchar(255) | NO   |     | NULL    |                |
-+----------+--------------+------+-----+---------+----------------+
+![Alt text](./images/image-0.png)
+
 
 - employment_opportunity (공고)
-+-------------------+---------------+------+-----+---------+----------------+
-| Field             | Type          | Null | Key | Default | Extra          |
-+-------------------+---------------+------+-----+---------+----------------+
-| id                | int           | NO   | PRI | NULL    | auto_increment |
-| company_id        | int           | YES  | MUL | NULL    |                |
-| position          | varchar(255)  | YES  |     | NULL    |                |
-| requirement_skill | varchar(255)  | YES  |     | NULL    |                |
-| compensation      | decimal(10,2) | YES  |     | NULL    |                |
-| content           | text          | YES  |     | NULL    |                |
-+-------------------+---------------+------+-----+---------+----------------+  
+![Alt text](./images/image-1.png)
+
 
 # 요구사항
 

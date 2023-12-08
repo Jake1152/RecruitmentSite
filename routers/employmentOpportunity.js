@@ -142,6 +142,8 @@ router.post("/", async (req, res) => {
     technicalSkill,
   } = req.body;
   try {
+    console.log(`#req.body: `, req.body)
+    console.log(companyId, recruitmentJobPosition, recruitmentBonus, recruitmentContent, technicalSkill)
     if (
       !companyId ||
       !isNumericString(companyId) ||
@@ -178,8 +180,8 @@ router.post("/", async (req, res) => {
 });
 
 // 공고 수정
-// //:id
-router.put("//:id", async (req, res) => {
+// /:id
+router.put("/:id", async (req, res) => {
   // request obejct properties trim
   for (const [key, value] of Object.entries(req.body)) {
     if (typeof value === "string") req.body[key] = value.trim();
@@ -192,7 +194,6 @@ router.put("//:id", async (req, res) => {
     technicalSkill,
   } = req.body;
   let { id } = req.params;
-  // id = id.trim(); // 사용자가 잘못된 URL => "//1 " "1 " 1뒤에 " "을 날리는게 맞지 않을 수
   try {
     if (
       !id ||
@@ -225,7 +226,7 @@ router.put("//:id", async (req, res) => {
         },
       },
     );
-    return res.status(200).json(updatedEmploymentOpportunity);
+    return res.status(204).send("No Cotent");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
@@ -233,7 +234,7 @@ router.put("//:id", async (req, res) => {
 });
 
 // 공고 삭제
-router.delete("//:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     if (!id || !isNumericString(id)) throw new Error("Validation issue");
